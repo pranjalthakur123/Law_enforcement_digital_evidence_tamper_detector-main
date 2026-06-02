@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Forensic Tamper Detector</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: flex;
+            background-color: #ffffff;
+        }
+
+        /* ---------------- LEFT PANEL (BRANDING) ---------------- */
+        .left-panel {
+            flex: 1.2;
+            background: linear-gradient(135deg, #0f172a 0%, #172554 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        /* Decorative Background Pattern */
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            top: -10%; left: -10%; right: -10%; bottom: -10%;
+            background-image: radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
+                              radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 40%);
+            z-index: 1;
+        }
+        .brand-container {
+            position: relative;
+            z-index: 2;
+            max-width: 480px;
+        }
+        .brand-container h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: -webkit-linear-gradient(45deg, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .brand-container p {
+            font-size: 1.15rem;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+
+        /* ---------------- RIGHT PANEL (FORM) ---------------- */
+        .right-panel {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            padding: 20px;
+        }
+        .form-container {
+            width: 100%;
+            max-width: 420px;
+        }
+        .form-container h2 {
+            font-size: 2rem;
+            color: #0f172a;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .form-container p.subtitle {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-top: 0;
+            margin-bottom: 35px;
+        }
+
+        /* Inputs */
+        .input-group {
+            margin-bottom: 24px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .input-group input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            color: #0f172a;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .input-group input:focus {
+            background: #ffffff;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+        .input-group input::placeholder {
+            color: #94a3b8;
+        }
+
+        /* Button */
+        button {
+            width: 100%;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+        }
+        button:hover { 
+            background-color: #2563eb; 
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+        }
+        button:active { 
+            transform: translateY(1px); 
+            box-shadow: none;
+        }
+
+        /* Alerts */
+        .error { 
+            background: #fef2f2;
+            color: #ef4444; 
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 24px; 
+            font-weight: 500; 
+            font-size: 0.9rem;
+            border-left: 4px solid #ef4444;
+        }
+        .success { 
+            background: #ecfdf5;
+            color: #10b981; 
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 24px; 
+            font-weight: 500; 
+            font-size: 0.9rem;
+            border-left: 4px solid #10b981;
+        }
+
+        /* Footer */
+        .footer-links {
+            margin-top: 35px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: #64748b;
+        }
+        .footer-links a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 800px) {
+            body { flex-direction: column; }
+            .left-panel { flex: none; padding: 60px 20px; text-align: left; }
+            .brand-container h1 { font-size: 2.5rem; }
+            .right-panel { padding: 40px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="left-panel">
+        <div class="brand-container">
+            <h1>Digital Evidence<br>Tamper Detector</h1>
+            <p>A highly secure, neural-network powered analytical suite built strictly for law enforcement to seamlessly detect visual anomalies, spliced components, and copy-move forgery.</p>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <div class="form-container">
+            <h2>Welcome Back</h2>
+            <p class="subtitle">Please enter your credentials to access the terminal.</p>
+
+            {% if error %}
+                <div class="error"><b>Security Error:</b> {{ error }}</div>
+            {% endif %}
+            {% if success %}
+                <div class="success"><b>Success:</b> {{ success }}</div>
+            {% endif %}
+
+            <form action="/login" method="post">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="e.g. admin" required autofocus>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit">Sign In securely</button>
+            </form>
+
+            <div class="footer-links">
+                Don't have an access identity? <a href="{{ url_for('signup') }}">Create Account</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
