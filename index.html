@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Evidence Tamper Detector</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+        }
+        h1 {
+            text-align: center;
+            font-weight: 800;
+            margin-bottom: 5px;
+            background: -webkit-linear-gradient(45deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        h2.subtitle {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 1rem;
+            font-weight: 400;
+            margin-bottom: 30px;
+        }
+        .header-actions {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .logout-btn {
+            background-color: #ef4444;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .logout-btn:hover {
+            background-color: #dc2626;
+        }
+        .upload-section {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px dashed #334155;
+            border-radius: 8px;
+        }
+        button {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: #2563eb;
+        }
+        input[type="file"] {
+            padding: 8px;
+            background: #0f172a;
+            border-radius: 6px;
+            color: #cbd5e1;
+        }
+        .result-header {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 20px 0 5px 0;
+        }
+        .score-badge {
+            display: inline-block;
+            background: #334155;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+        .card {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+        .card h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 10px;
+            color: #e2e8f0;
+        }
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+        .item-label { color: #94a3b8; font-weight: 600; margin-right: 15px; }
+        .item-value { font-family: monospace; color: #cbd5e1; }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            border: 1px solid #334155;
+        }
+        .image-container { text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Tamper Detector</h1>
+    <h2 class="subtitle">Law Enforcement Digital Evidence Detector</h2>
+
+    <form class="upload-section" action="/detect" method="post" enctype="multipart/form-data" onsubmit="document.getElementById('analyzeBtn').style.backgroundColor='#10b981'; document.getElementById('analyzeBtn').innerText='Analyzing...';">
+        <input type="file" name="image" accept="image/*" required>
+        <button type="submit" id="analyzeBtn">Analyze Image</button>
+    </form>
+
+    {% if result %}
+        <div style="text-align: center;">
+            <div class="result-header" style="color: {% if 'Tampered' in result %}#ef4444{% else %}#22c55e{% endif %};">
+                {{ result }}
+            </div>
+            <div class="score-badge">Combined Score: {{ score }} / 1.0</div>
+        </div>
+
+        <div class="grid">
+            <div class="card image-container">
+                <h3>Original Image</h3>
+                <img src="{{ url_for('static', filename=image) }}" alt="Original Image">
+            </div>
+            <div class="card image-container">
+                <h3>Error Level Analysis (ELA)</h3>
+                <img src="{{ url_for('static', filename=ela_image) }}" alt="ELA Image">
+            </div>
+            
+            <div class="card">
+                <h3>Deep Analysis Metrics</h3>
+                <div class="item-row"><span class="item-label">ELA Anomaly:</span><span class="item-value">{{ ela }}</span></div>
+                <div class="item-row"><span class="item-label">SIFT Variance:</span><span class="item-value">{{ sift }}</span></div>
+                <div class="item-row"><span class="item-label">CNN Confidence:</span><span class="item-value">{{ cnn }}</span></div>
+                <div class="item-row"><span class="item-label">pHash Diff:</span><span class="item-value">{{ phash }}</span></div>
+                <div class="item-row"><span class="item-label">Metadata Flags:</span><span class="item-value">{{ metadata }}</span></div>
+            </div>
+
+            <div class="card">
+                <h3>Cryptographic Signatures</h3>
+                <div class="item-row" style="flex-direction: column;">
+                    <span class="item-label" style="margin-bottom:4px;">SHA256:</span>
+                    <span class="item-value" style="font-size:12px;">{{ sha256 }}</span>
+                </div>
+                <hr style="border: 0; border-top: 1px solid #334155; margin: 12px 0;">
+                <div class="item-row" style="flex-direction: column;">
+                    <span class="item-label" style="margin-bottom:4px;">SHA3-256:</span>
+                    <span class="item-value" style="font-size:12px;">{{ sha3 }}</span>
+                </div>
+                <hr style="border: 0; border-top: 1px solid #334155; margin: 12px 0;">
+                <div class="item-row" style="flex-direction: column;">
+                    <span class="item-label" style="margin-bottom:4px;">BLAKE2b:</span>
+                    <span class="item-value" style="font-size:12px;">{{ blake2b }}</span>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
