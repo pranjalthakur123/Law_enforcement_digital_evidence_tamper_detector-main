@@ -1,0 +1,9 @@
+flask
+opencv-python-headless
+pillow
+numpy
+tensorflow-cpu
+scikit-learn
+imagehash
+matplotlib
+gunicorn
